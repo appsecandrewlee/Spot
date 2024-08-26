@@ -1,3 +1,4 @@
+"use client";
 import React, { Suspense } from 'react';
 import { useChat } from 'ai/react';
 import { FiMenu, FiMapPin, FiClock, FiMic, FiSend } from 'react-icons/fi';
