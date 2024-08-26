@@ -1,3 +1,5 @@
+/* es-lint disable */ 
+
 "use client";
 import React, { Suspense } from 'react';
 import { useChat } from 'ai/react';
