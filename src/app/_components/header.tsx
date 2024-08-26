@@ -90,7 +90,7 @@ const HeaderNoAuth: React.FC = () => {
               className="text-white rounded-full px-3 p-2 text-sm font-medium bg-black"
               onClick={toggleGetStartedModal}
             >
-              Get Started
+                New Spot 
             </button>
           </div>
         </div>
@@ -104,7 +104,7 @@ const HeaderNoAuth: React.FC = () => {
         <button className="w-full py-2 px-4 border border-gray-300 rounded-full mb-4 flex items-center justify-center"
           onClick={handleGoogleSignIn}>
           
-          <Image src="/google.png" alt="Google" width={20} height={20} className="mr-2" />
+          <Image src="/katchup.svg" alt="Google" width={40} height={40} className="mr-2" />
           Sign in with Google
         </button>
         <p className="text-center text-sm mb-4">
@@ -122,7 +122,7 @@ const HeaderNoAuth: React.FC = () => {
       >
         <button className="w-full py-2 px-4 border border-gray-300 rounded-full mb-4 flex items-center justify-center"
           onClick={handleGoogleSignIn}>
-          <Image src="/google.png" alt="Google" width={20} height={20} className="mr-2" />
+          <Image src="/katchup.svg" alt="Google" width={40} height={40} className="mr-2" />
           Sign in with Google
         </button>
         <p className="text-center text-sm mb-4">
