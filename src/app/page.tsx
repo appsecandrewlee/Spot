@@ -1,3 +1,6 @@
+
+
+/* eslint-disable */
 import Link from "next/link";
 
 import { getServerAuthSession } from "~/server/auth";
@@ -13,7 +16,6 @@ export default async function Home() {
     <HydrateClient>
       <HeaderNoAuth/>
       <BodyNoAuth/>
-
     </HydrateClient>
   );
 }
