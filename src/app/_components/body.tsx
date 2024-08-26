@@ -1,12 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import type { ChangeEvent } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
 const BodyNoAuth = () => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [promptText, setPromptText] = useState("");
     const images = [
         '/second.jpg',
     ];
@@ -14,10 +16,14 @@ const BodyNoAuth = () => {
     useEffect(() => {
         const intervalId = setInterval(() => {
             setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-        }, 5000); 
+        }, 5000);
 
         return () => clearInterval(intervalId);
     }, [images.length]);
+
+    const handlePromptChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setPromptText(e.target.value);
+    };
 
     return (
         <div className="flex flex-col min-h-screen">
@@ -34,12 +40,18 @@ const BodyNoAuth = () => {
                     <div className="text-center text-white p-6 max-w-2xl">
                         <h1 className="text-4xl font-bold mb-6">Get more from your area.</h1>
                         <div className="bg-white rounded-full flex items-center p-2 mb-4">
-                            <p className="text-black text-lg flex-grow text-left pl-4">
-                                Ready to chat to our AI bot to get your food?
-                            </p>
-                            <button className="bg-red-500 text-white rounded-full p-2">
-                                <ArrowRight size={24} />
-                            </button>
+                            <input
+                                type="text"
+                                value={promptText}
+                                onChange={handlePromptChange}
+                                className="text-black text-lg flex-grow text-left pl-4 bg-transparent outline-none"
+                                placeholder="What are you feeling today?"
+                            />
+                            <Link href={`/katchbot?prompt=${encodeURIComponent(promptText)}`}>
+                                <button className="bg-red-500 text-white rounded-full p-2">
+                                    <ArrowRight size={24} />
+                                </button>
+                            </Link>
                         </div>
                     </div>
                 </div>
