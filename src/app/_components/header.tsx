@@ -73,7 +73,7 @@ const HeaderNoAuth: React.FC = () => {
           <div className="flex items-center gap-5">
             <div className="hidden text-sm sm:flex items-center gap-5">
               {[
-                { title: "Our story", path: "/" },
+                { title: "Our Journey", path: "/" },
               ].map((link, index) => (
                 <Link key={index} href={link.path}>
                   {link.title}
