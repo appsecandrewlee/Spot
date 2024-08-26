@@ -1,13 +1,9 @@
-/* eslint-disable */
-
-'use client';
-
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useChat } from 'ai/react';
 import { FiMenu, FiMapPin, FiClock, FiMic, FiSend } from 'react-icons/fi';
 import { useSearchParams } from 'next/navigation';
 
-export default function KatchBotPage() {
+function KatchBotPage() {
   const searchParams = useSearchParams();
   const initialPrompt = searchParams.get('prompt');
 
@@ -21,7 +17,7 @@ export default function KatchBotPage() {
       <header className="p-4 flex justify-between items-center">
         <FiMenu className="text-2xl text-gray-600" />
         <h1 className="text-2xl font-bold text-pink-500">KatchBot</h1>
-        <div className="w-6"></div> 
+        <div className="w-6"></div>
       </header>
 
       <main className="flex-1 p-4 flex flex-col items-center relative overflow-hidden">
@@ -71,5 +67,13 @@ export default function KatchBotPage() {
         </button>
       </form>
     </div>
+  );
+}
+
+export default function PageWrapper() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <KatchBotPage />
+    </Suspense>
   );
 }
