@@ -7,7 +7,7 @@ import {
 } from "~/server/api/trpc";
 
 
-export const userRouter = createTRPCRouter({
+export const vercelRouter = createTRPCRouter({
 
-    
+
 });
