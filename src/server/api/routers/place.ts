@@ -40,13 +40,13 @@ export const placeRouter = createTRPCRouter({
 
         ${formattedPlaces}
 
-        User Query: if the user types in ${formattedPlaces} && ${input.query}
-
+        User Query: if the user types in ${formattedPlaces} && ${input.query} you should give them the information of all the formats. 
+      
         Provide a helpful response based on the available restaurant information.
       `;
 
       const response = await openai.chat.completions.create({
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-4-turbo',
         messages: [{ role: "user", content: prompt }],
       });
 
