@@ -18,7 +18,6 @@ export const placeRouter = createTRPCRouter({
       query: z.string(),
     }))
     .mutation(async ({ input }) => {
-      // Randomly select 4 restaurants
       const selectedPlaces = jsonData.sort(() => 0.5 - Math.random()).slice(0, 4);
 
       const formattedPlaces = selectedPlaces.map((place: any, index: number) => `
