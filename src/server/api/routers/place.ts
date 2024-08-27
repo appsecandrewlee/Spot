@@ -25,6 +25,8 @@ export const placeRouter = createTRPCRouter({
            Name: ${place.title}
            Category: ${place.categories || "check back for category!"}
            Location: ${place.city}, ${place.state}
+           Phone: ${place.phone}
+           Review: ${place.review}
       `).join("\n\n");
 
       const prompt = `
@@ -34,7 +36,7 @@ export const placeRouter = createTRPCRouter({
 
       User Query: ${input.query}
 
-      For each restaurant, provide its location, name,category, and location.
+      For each restaurant, provide its Location, Name,Category,Phone, review and location.
       Format each recommendation as follows:
       "[Number]. [Restaurant Name] - [Category] in [Location]"
 
