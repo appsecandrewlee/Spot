@@ -1,9 +1,10 @@
 /* eslint-disable */
 
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FiMenu, FiMapPin, FiMic, FiSend } from 'react-icons/fi';
 import { useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 import { api } from '~/trpc/react';
 
 function KatchBotPage() {
@@ -16,15 +17,28 @@ function KatchBotPage() {
   const ragQuery = api.place.ragQuery.useMutation();
   const genericQuery = api.place.genericQuery.useMutation();
 
+  useEffect(() => {
+    const saveData = async () => {
+      try {
+        const response = await fetch('/api/result', { method: 'POST' });
+        const data = await response.json();
+        console.log('Data saved:', data);
+      } catch (error) {
+        console.error('Error saving data:', error);
+      }
+    };
+
+    saveData();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
-  
+
     setMessages(prev => [...prev, { role: 'user', content: input }]);
-  
+
     const isRestaurantRelated = /restaurant|eat|food|dining/i.test(input);
-    
+
     try {
       if (isRestaurantRelated) {
         const result = await ragQuery.mutateAsync({ query: input });
@@ -38,10 +52,9 @@ function KatchBotPage() {
       console.error('Error fetching response:', error);
       setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, I encountered an error while processing your request.' }]);
     }
-  
+
     setInput('');
   };
-  
 
   return (
     <div className="flex flex-col h-screen bg-pink-50">
@@ -80,11 +93,21 @@ function KatchBotPage() {
       </main>
 
       <div className="px-4 mb-4 flex space-x-4">
-        {places.slice(0, 2).map((place, index) => (
+        {places.map((place, index) => (
           <div key={index} className="flex-1 bg-white rounded-lg p-3 shadow">
+            {place.imageUrl && (
+              <Image
+                src={place.imageUrl}
+                alt={place.title}
+                width={200}
+                height={200}
+                className="w-full h-32 object-cover mb-2 rounded"
+              />
+            )}
             <FiMapPin className="text-pink-500 mb-1" />
             <h3 className="font-semibold">{place.title}</h3>
             <p className="text-xs text-gray-600">{place.categoryName}</p>
+            <p className="text-xs text-gray-600">{place.location}</p>
           </div>
         ))}
       </div>

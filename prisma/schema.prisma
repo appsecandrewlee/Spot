@@ -22,12 +22,12 @@ model Account {
     type                     String
     provider                 String
     providerAccountId        String
-    refresh_token            String? // @db.Text
-    access_token             String? // @db.Text
+    refresh_token            String? 
+    access_token             String? 
     expires_at               Int?
     token_type               String?
     scope                    String?
-    id_token                 String? // @db.Text
+    id_token                 String? 
     session_state            String?
     user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
     refresh_token_expires_in Int?
@@ -62,18 +62,25 @@ model VerificationToken {
 }
 
 model Place {
-  id            String  @id @default(cuid())
+  id            String   @id @default(cuid())
   title         String
-  totalScore    Float
-  reviewsCount  Int
-  street        String
+  price         String?
+  address       String
   city          String
   state         String
-  countryCode   String
-  website       String?
+  countryCode   String?
   phone         String?
-  categoryName  String
+  latitude      Float?
+  longitude     Float?
+  totalScore    Float
+  reviewsCount  Int
+  categories    String[]
   url           String
+  imageUrl      String?
+  imageUrls     String[]
+  website       String?
+  reserveTableUrl String?
+  googleFoodUrl String?
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt

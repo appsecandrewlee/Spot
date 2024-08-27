@@ -18,19 +18,24 @@ export async function POST() {
     
     const transformedPlaces = places.map((place: any) => ({
         title: place.title || `Unnamed Place`,
-        totalScore: place.totalScore || 0,
-        reviewsCount: place.reviewsCount || 0,
-        street: place.street || '',
+        price: place.price || null,
+        address: place.address || '',
         city: place.city || '',
         state: place.state || '',
-        countryCode: place.countryCode || '',
-        website: place.website || null,
+        countryCode: place.countryCode || null,
         phone: place.phone || null,
-        categoryName: place.categoryName || 'Uncategorized',
-        url: place.url || ''
-    }));
-
-
+        latitude: place.location?.lat || null,
+        longitude: place.location?.lng || null,
+        totalScore: place.totalScore || 0,
+        reviewsCount: place.reviewsCount || 0,
+        categories: place.categories || ['Uncategorized'],
+        url: place.url || '',
+        imageUrl: place.imageUrl || null,
+        imageUrls: place.imageUrls || [],
+        website: place.website || null,
+        reserveTableUrl: place.reserveTableUrl || null,
+        googleFoodUrl: place.googleFoodUrl || null,
+      }));
     const result = await prisma.place.createMany({
         data: transformedPlaces,
         skipDuplicates: true,

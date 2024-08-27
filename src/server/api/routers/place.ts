@@ -21,23 +21,24 @@ export const placeRouter = createTRPCRouter({
       const selectedPlaces = jsonData.sort(() => 0.5 - Math.random()).slice(0, 4);
 
       const formattedPlaces = selectedPlaces.map((place: any, index: number) => `
-        ${index + 1}. Name: ${place.title}
+        ${index + 1}. Image URL: ${place.imageUrl || 'No image available'}
+           Name: ${place.title}
            Category: ${place.categoryName}
-           Rating: ${place.totalScore}/5 (${place.reviewsCount} reviews)
-           Address: ${place.street}, ${place.city}, ${place.state}
-           Phone: ${place.phone}
+           Location: ${place.city}, ${place.state}
       `).join("\n\n");
 
       const prompt = `
-      Suggest 3-4 restaurants from the following numbered list:
+      Recommend 3-4 restaurants from the following numbered list:
 
       ${formattedPlaces}
 
       User Query: ${input.query}
 
-      Provide a brief recommendation for each restaurant based only on the information given above. 
-      Start each recommendation with the restaurant's number and name, followed by its phone number in parentheses.
-      For example: "1. Restaurant Name (Phone: 123-456-7890): ..."
+      For each restaurant, provide its number, name, category, and location.
+      Format each recommendation as follows:
+      "[Number]. [Restaurant Name] - [Category] in [Location]"
+
+      Do not include the image URL in your response.
       `;
 
       const response = await openai.chat.completions.create({
@@ -49,22 +50,24 @@ export const placeRouter = createTRPCRouter({
 
       return {
         aiResponse,
-        relevantPlaces: selectedPlaces,
+        relevantPlaces: selectedPlaces.map(place => ({
+          imageUrl: place.imageUrl || null,
+          title: place.title,
+          categoryName: place.categoryName,
+          location: `${place.city}, ${place.state}`
+        })),
       };
     }),
 
-
-
-   genericQuery: publicProcedure
-  .input(z.object({
-    query: z.string(),
-  }))
-  .mutation(async ({ input }) => {
-    const isRelatedToRestaurants = /restaurant|food|dining|eat/i.test(input.query);
-    if (!isRelatedToRestaurants) {
-      return "I am an AI recommender for restaurants, I'm sorry I can't help you with that.";
-    }
-    return "Please provide more details or ask about our restaurant recommendations.";
-  }),
-
+  genericQuery: publicProcedure
+    .input(z.object({
+      query: z.string(),
+    }))
+    .mutation(async ({ input }) => {
+      const isRelatedToRestaurants = /restaurant|food|dining|eat/i.test(input.query);
+      if (!isRelatedToRestaurants) {
+        return "I am an AI recommender for restaurants, I'm sorry I can't help you with that.";
+      }
+      return "Please provide more details or ask about our restaurant recommendations.";
+    }),
 });
