@@ -40,7 +40,7 @@ export const placeRouter = createTRPCRouter({
 
         ${formattedPlaces}
 
-        User Query: ${input.query}
+        User Query: if the user types in ${formattedPlaces} && ${input.query}
 
         Provide a helpful response based on the available restaurant information.
       `;

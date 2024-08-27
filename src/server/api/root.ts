@@ -1,5 +1,4 @@
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
-import { vercelRouter } from "./routers/vercel";
 import { placeRouter } from "./routers/place";
 
 /**
@@ -8,7 +7,6 @@ import { placeRouter } from "./routers/place";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  vercel: vercelRouter,
   place: placeRouter, 
 });
 
