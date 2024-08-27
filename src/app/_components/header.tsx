@@ -63,13 +63,13 @@ const HeaderNoAuth: React.FC = () => {
     <>
       <header className="border-b border-black sticky top-0 z-50 bg-white">
         <div className="size h-[70px] flex items-center justify-between">
-          <Link href="/">
+        <Link href="/" className="pl-6">
             <img
-              className="h-[5rem]"
-              src="/katchup.svg"
-              alt="logo"
+                className="h-[3rem]"
+                src="/cross.svg"
+                alt="logo"
             />
-          </Link>
+        </Link>
           <div className="flex items-center gap-5">
             <div className="hidden text-sm sm:flex items-center gap-5">
               {[
@@ -104,7 +104,7 @@ const HeaderNoAuth: React.FC = () => {
         <button className="w-full py-2 px-4 border border-gray-300 rounded-full mb-4 flex items-center justify-center"
           onClick={handleGoogleSignIn}>
           
-          <Image src="/katchup.svg" alt="Google" width={40} height={40} className="mr-2" />
+          <Image src="/cross.svg" alt="Google" width={20} height={20} className="mr-2" />
           Sign in with Google
         </button>
         <p className="text-center text-sm mb-4">
@@ -122,7 +122,7 @@ const HeaderNoAuth: React.FC = () => {
       >
         <button className="w-full py-2 px-4 border border-gray-300 rounded-full mb-4 flex items-center justify-center"
           onClick={handleGoogleSignIn}>
-          <Image src="/katchup.svg" alt="Google" width={40} height={40} className="mr-2" />
+          <Image src="/cross.svg" alt="Google" width={20} height={20} className="mr-2" />
           Sign in with Google
         </button>
         <p className="text-center text-sm mb-4">

@@ -1,20 +1,37 @@
 /* eslint-disable */
 
-
 "use client";
-import React, { Suspense } from 'react';
-import { useChat } from 'ai/react';
-import { FiMenu, FiMapPin, FiClock, FiMic, FiSend } from 'react-icons/fi';
+import React, { useState } from 'react';
+import { FiMenu, FiMapPin, FiMic, FiSend } from 'react-icons/fi';
 import { useSearchParams } from 'next/navigation';
+import { api } from '~/trpc/react';
 
 function KatchBotPage() {
   const searchParams = useSearchParams();
   const initialPrompt = searchParams.get('prompt');
+  const [input, setInput] = useState(initialPrompt ?? '');
+  const [messages, setMessages] = useState<Array<{ role: 'user' | 'assistant', content: string }>>([]);
+  const [places, setPlaces] = useState<any[]>([]);
 
-  const { messages, input, handleInputChange, handleSubmit } = useChat({
-    api: '/api/chatbot',
-    initialInput: initialPrompt ?? '',
-  });
+  const ragQuery = api.place.ragQuery.useMutation();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+
+    setMessages(prev => [...prev, { role: 'user', content: input }]);
+
+    try {
+      const result = await ragQuery.mutateAsync({ query: input });
+      setPlaces(result.relevantPlaces);
+      setMessages(prev => [...prev, { role: 'assistant', content: result.aiResponse }]);
+    } catch (error) {
+      console.error('Error fetching response:', error);
+      setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, I encountered an error while processing your request.' }]);
+    }
+
+    setInput('');
+  };
 
   return (
     <div className="flex flex-col h-screen bg-pink-50">
@@ -33,8 +50,8 @@ function KatchBotPage() {
         </div>
 
         <div className="w-full mt-4 overflow-y-auto flex-grow">
-          {messages.map((message) => (
-            <div key={message.id} className="mb-2 p-2 rounded bg-white bg-opacity-70">
+          {messages.map((message, index) => (
+            <div key={index} className="mb-2 p-2 rounded bg-white bg-opacity-70">
               <strong>{message.role === 'user' ? 'You: ' : 'KatchBot: '}</strong>
               {message.content}
             </div>
@@ -43,16 +60,13 @@ function KatchBotPage() {
       </main>
 
       <div className="px-4 mb-4 flex space-x-4">
-        <div className="flex-1 bg-white rounded-lg p-3 shadow">
-          <FiMapPin className="text-pink-500 mb-1" />
-          <h3 className="font-semibold">Moody Restaurant</h3>
-          <p className="text-xs text-gray-600">Top 10 Best Vibes in Melbourne</p>
-        </div>
-        <div className="flex-1 bg-white rounded-lg p-3 shadow">
-          <FiClock className="text-pink-500 mb-1" />
-          <h3 className="font-semibold">Trendy Bar</h3>
-          <p className="text-xs text-gray-600">Hotspots You Can't Miss</p>
-        </div>
+        {places.slice(0, 2).map((place, index) => (
+          <div key={index} className="flex-1 bg-white rounded-lg p-3 shadow">
+            <FiMapPin className="text-pink-500 mb-1" />
+            <h3 className="font-semibold">{place.title}</h3>
+            <p className="text-xs text-gray-600">{place.categoryName}</p>
+          </div>
+        ))}
       </div>
 
       <form onSubmit={handleSubmit} className="p-4 bg-white rounded-t-3xl flex items-center">
@@ -60,7 +74,7 @@ function KatchBotPage() {
           type="text"
           className="flex-1 bg-gray-100 rounded-full px-4 py-2 mr-2"
           value={input}
-          onChange={handleInputChange}
+          onChange={(e) => setInput(e.target.value)}
           placeholder="Message KatchBot"
         />
         <button type="button" className="p-2">
@@ -76,8 +90,8 @@ function KatchBotPage() {
 
 export default function PageWrapper() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <React.Suspense fallback={<div>Loading...</div>}>
       <KatchBotPage />
-    </Suspense>
+    </React.Suspense>
   );
 }

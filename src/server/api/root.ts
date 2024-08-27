@@ -1,5 +1,6 @@
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 import { vercelRouter } from "./routers/vercel";
+import { placeRouter } from "./routers/place";
 
 /**
  * This is the primary router for your server.
@@ -8,6 +9,7 @@ import { vercelRouter } from "./routers/vercel";
  */
 export const appRouter = createTRPCRouter({
   vercel: vercelRouter,
+  place: placeRouter, 
 });
 
 // export type definition of API

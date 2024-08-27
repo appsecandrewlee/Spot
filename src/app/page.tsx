@@ -11,7 +11,6 @@ import BodyNoAuth from "./_components/body";
 export default async function Home() {
   const session = await getServerAuthSession();
 
-
   return (
     <HydrateClient>
       <HeaderNoAuth/>
