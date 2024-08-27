@@ -30,15 +30,15 @@ export const placeRouter = createTRPCRouter({
       `).join("\n\n");
 
       const prompt = `
-      Recommend 3-4 restaurants from the following numbered list:
+      Recommend 1-2 restaurants from the following numbered list:
 
       ${formattedPlaces}
 
       User Query: ${input.query}
 
-      For each restaurant, provide its Location, Name,Category,Phone, review and location.
+      For each restaurant, provide its Location, Name,Category,Phone, Review and location, If Review is undefined, don't reveal it. 
       Format each recommendation as follows:
-      "[Number]. [Restaurant Name] - [Category] in [Location]"
+      "[Number]. [Restaurant Name] - [Category] [Phone] [Review] in [Location] then briefly 2 sentences to explain the restaurant, that can be made up"
 
       Do not include the image URL in your response.
       `;
