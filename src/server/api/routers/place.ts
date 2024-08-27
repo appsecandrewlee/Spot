@@ -38,7 +38,13 @@ export const placeRouter = createTRPCRouter({
 
       For each restaurant, provide its Location, Name,Category,Phone, Review and location, If Review is undefined, don't reveal it. 
       Format each recommendation as follows:
-      "[Number]. [Restaurant Name] - [Category] [Phone] [Review] in [Location] then briefly 2 sentences to explain the restaurant, that can be made up"
+      "[Number]\n. 
+      [Restaurant Name]\n
+      [Category]\n 
+      [Phone]\n
+      [Review]\n
+      in [Location]\n
+      then briefly 2 sentences to explain the restaurant, that can be made up"
 
       Do not include the image URL in your response.
       `;
