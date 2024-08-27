@@ -1,5 +1,6 @@
 /* eslint-disable */
 
+
 "use client";
 import React, { useState } from 'react';
 import { FiMenu, FiMapPin, FiMic, FiSend } from 'react-icons/fi';
@@ -51,8 +52,17 @@ function KatchBotPage() {
 
         <div className="w-full mt-4 overflow-y-auto flex-grow">
           {messages.map((message, index) => (
-            <div key={index} className="mb-2 p-2 rounded bg-white bg-opacity-70">
-              <strong>{message.role === 'user' ? 'You: ' : 'KatchBot: '}</strong>
+            <div 
+              key={index} 
+              className={`mb-2 p-2 rounded ${
+                message.role === 'user' 
+                  ? 'bg-blue-100 mr-auto' 
+                  : 'bg-green-100 ml-auto'
+              } max-w-[80%]`}
+            >
+              <strong className={message.role === 'user' ? 'text-blue-600' : 'text-green-600'}>
+                {message.role === 'user' ? 'You: ' : 'KatchBot: '}
+              </strong>
               {message.content}
             </div>
           ))}

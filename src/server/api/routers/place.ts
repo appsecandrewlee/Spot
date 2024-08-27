@@ -35,14 +35,22 @@ export const placeRouter = createTRPCRouter({
       `).join("\n\n");
 
       const prompt = `
-        You are an AI assistant for a restaurant recommendation service. 
-        Use the following information about relevant restaurants to answer the user's query:
+      You are a helpful AI assistant specializing in restaurant recommendations. You have access to an extensive database of dining options, including detailed information about cuisine types, price ranges, ambience, dietary accommodations, location-specific attributes, user reviews, and special features like outdoor seating or live entertainment.
 
-        ${formattedPlaces}
+      Use the following information about relevant restaurants to answer the user's query:
 
-        User Query: if the user types in ${formattedPlaces} && ${input.query} you should give them the information of all the formats. 
-      
-        Provide a helpful response based on the available restaurant information.
+      ${formattedPlaces}
+
+      User Query: ${input.query}
+
+      Your response should:
+      1. Include 2-3 personalized restaurant recommendations from the provided list.
+      2. Provide a brief description of each recommended restaurant.
+      3. Highlight why each recommendation would be a good fit based on the user's criteria.
+      4. Offer additional tips, such as the best dishes to try, ideal times to visit, or any current promotions.
+      5. If the user's query doesn't match the available information, politely explain the limitations and suggest alternatives based on the available data.
+      Remember to be conversational, engaging, and tailored to the user's specific needs. If there's any ambiguity in the query, feel free to make reasonable assumptions or ask for clarification.
+      Provide a helpful and detailed response based on the available restaurant information and the user's query.
       `;
 
       const response = await openai.chat.completions.create({
