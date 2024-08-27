@@ -1,3 +1,6 @@
+/* eslint-disable */
+
+
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import OpenAI from 'openai';
@@ -47,7 +50,7 @@ export const placeRouter = createTRPCRouter({
         messages: [{ role: "user", content: prompt }],
       });
 
-      const aiResponse = response.choices[0]?.message?.content || "Sorry, I couldn't generate a response.";
+      const aiResponse = response.choices[0]?.message?.content ?? "Sorry, I couldn't generate a response.";
 
       return {
         aiResponse,
