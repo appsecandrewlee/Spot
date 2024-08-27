@@ -14,24 +14,34 @@ function KatchBotPage() {
   const [places, setPlaces] = useState<any[]>([]);
 
   const ragQuery = api.place.ragQuery.useMutation();
+  const genericQuery = api.place.genericQuery.useMutation();
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
-
+  
     setMessages(prev => [...prev, { role: 'user', content: input }]);
-
+  
+    const isRestaurantRelated = /restaurant|eat|food|dining/i.test(input);
+    
     try {
-      const result = await ragQuery.mutateAsync({ query: input });
-      setPlaces(result.relevantPlaces);
-      setMessages(prev => [...prev, { role: 'assistant', content: result.aiResponse }]);
+      if (isRestaurantRelated) {
+        const result = await ragQuery.mutateAsync({ query: input });
+        setPlaces(result.relevantPlaces);
+        setMessages(prev => [...prev, { role: 'assistant', content: result.aiResponse }]);
+      } else {
+        const response = await genericQuery.mutateAsync({ query: input });
+        setMessages(prev => [...prev, { role: 'assistant', content: response }]);
+      }
     } catch (error) {
       console.error('Error fetching response:', error);
       setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, I encountered an error while processing your request.' }]);
     }
-
+  
     setInput('');
   };
+  
 
   return (
     <div className="flex flex-col h-screen bg-pink-50">
@@ -47,7 +57,6 @@ function KatchBotPage() {
 
         <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
           <div className="text-[20rem] font-bold text-pink-300">
-          
           </div>
         </div>
 

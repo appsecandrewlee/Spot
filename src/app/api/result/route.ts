@@ -30,7 +30,6 @@ export async function POST() {
         url: place.url || ''
     }));
 
-    console.log('Transformed places:', transformedPlaces);
 
     const result = await prisma.place.createMany({
         data: transformedPlaces,

@@ -52,4 +52,19 @@ export const placeRouter = createTRPCRouter({
         relevantPlaces: selectedPlaces,
       };
     }),
+
+
+
+   genericQuery: publicProcedure
+  .input(z.object({
+    query: z.string(),
+  }))
+  .mutation(async ({ input }) => {
+    const isRelatedToRestaurants = /restaurant|food|dining|eat/i.test(input.query);
+    if (!isRelatedToRestaurants) {
+      return "I am an AI recommender for restaurants, I'm sorry I can't help you with that.";
+    }
+    return "Please provide more details or ask about our restaurant recommendations.";
+  }),
+
 });
