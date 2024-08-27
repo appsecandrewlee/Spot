@@ -45,17 +45,19 @@ function KatchBotPage() {
         <h2 className="text-3xl font-bold text-center mb-2">Hello there!</h2>
         <p className="text-lg text-center mb-4">Let's find the perfect spot for your next outing!</p>
 
-        <div className="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
-          <span className="text-[20rem] font-bold text-pink-300">K</span>
+        <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
+          <div className="text-[20rem] font-bold text-pink-300">
+          
+          </div>
         </div>
 
         <div className="w-full mt-4 overflow-y-auto flex-grow">
           {messages.map((message, index) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className={`mb-2 p-2 rounded ${
-                message.role === 'user' 
-                  ? 'bg-blue-100 mr-auto' 
+                message.role === 'user'
+                  ? 'bg-blue-100 mr-auto'
                   : 'bg-green-100 ml-auto'
               } max-w-[80%]`}
             >
