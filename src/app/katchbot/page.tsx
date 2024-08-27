@@ -1,6 +1,5 @@
 /* eslint-disable */
 
-
 "use client";
 import React, { useState } from 'react';
 import { FiMenu, FiMapPin, FiMic, FiSend } from 'react-icons/fi';
@@ -85,7 +84,7 @@ function KatchBotPage() {
           className="flex-1 bg-gray-100 rounded-full px-4 py-2 mr-2"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Message KatchBot"
+          placeholder="Message SpotBot"
         />
         <button type="button" className="p-2">
           <FiMic className="text-xl text-pink-500" />

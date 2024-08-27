@@ -1,29 +1,28 @@
 /* eslint-disable */
-
-
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import OpenAI from 'openai';
+import fs from 'fs';
+import path from 'path';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY!
 });
+
+const dataPath = path.join(process.cwd(), 'data.json');
+const jsonData = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
 
 export const placeRouter = createTRPCRouter({
   ragQuery: publicProcedure
     .input(z.object({
       query: z.string(),
     }))
-    .mutation(async ({ ctx, input }) => {
-      const relevantPlaces = await ctx.db.place.findMany({
-        where: {
-          OR: [
-            { title: { contains: input.query, mode: 'insensitive' } },
-            { categoryName: { contains: input.query, mode: 'insensitive' } },
-          ],
-        },
-        take: 5, 
-      });
+    .mutation(async ({ input }) => {
+      // Filter relevant places based on the query
+      const relevantPlaces = jsonData.filter(place => 
+        place.title.toLowerCase().includes(input.query.toLowerCase()) ||
+        place.categoryName.toLowerCase().includes(input.query.toLowerCase())
+      ).slice(0, 5);
 
       const formattedPlaces = relevantPlaces.map(place => `
         Name: ${place.title}
@@ -43,7 +42,7 @@ export const placeRouter = createTRPCRouter({
 
       User Query: ${input.query}
 
-      Your response should:
+      Your response should only recommend the restaurants in the provided list:
       1. Include 2-3 personalized restaurant recommendations from the provided list.
       2. Provide a brief description of each recommended restaurant.
       3. Highlight why each recommendation would be a good fit based on the user's criteria.
