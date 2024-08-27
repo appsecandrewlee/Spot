@@ -50,7 +50,7 @@ export const placeRouter = createTRPCRouter({
 
       return {
         aiResponse,
-        relevantPlaces: selectedPlaces.map(place => ({
+        relevantPlaces: selectedPlaces.map((place: { imageUrl: any; title: any; categoryName: any; city: any; state: any; }) => ({
           imageUrl: place.imageUrl || null,
           title: place.title,
           categoryName: place.categoryName,
@@ -59,15 +59,35 @@ export const placeRouter = createTRPCRouter({
       };
     }),
 
-  genericQuery: publicProcedure
+    genericQuery: publicProcedure
     .input(z.object({
       query: z.string(),
     }))
     .mutation(async ({ input }) => {
       const isRelatedToRestaurants = /restaurant|food|dining|eat/i.test(input.query);
-      if (!isRelatedToRestaurants) {
-        return "I am an AI recommender for restaurants, I'm sorry I can't help you with that.";
+      
+      if (isRelatedToRestaurants) {
+        return "Please provide more details or ask about our restaurant recommendations.";
       }
-      return "Please provide more details or ask about our restaurant recommendations.";
+
+      const prompt = `
+        You are an AI assistant primarily focused on restaurant recommendations. 
+        However, you've been asked a question that's not related to restaurants: "${input.query}"
+        
+        Please provide a very brief (1-2 sentences) response to the query, 
+        followed by a polite reminder that you specialize in restaurant recommendations 
+        and suggest using a more general AI like ChatGPT for detailed answers on other topics.
+
+        Your response should be informative yet concise, and maintain a friendly tone.
+      `;
+
+      const response = await openai.chat.completions.create({
+        model: 'gpt-3.5-turbo',
+        messages: [{ role: "user", content: prompt }],
+        max_tokens: 150  
+      });
+
+      return response.choices[0]?.message?.content ?? 
+        "I'm sorry, I couldn't generate a response. As a restaurant recommendation AI, I might not be the best source for this information. Perhaps try asking ChatGPT for a more comprehensive answer.";
     }),
 });
