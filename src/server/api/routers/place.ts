@@ -23,7 +23,7 @@ export const placeRouter = createTRPCRouter({
       const formattedPlaces = selectedPlaces.map((place: any, index: number) => `
         ${index + 1}. Image URL: ${place.imageUrl || 'No image available'}
            Name: ${place.title}
-           Category: ${place.categoryName}
+           Category: ${place.categories || "check back for category!"}
            Location: ${place.city}, ${place.state}
       `).join("\n\n");
 
@@ -34,7 +34,7 @@ export const placeRouter = createTRPCRouter({
 
       User Query: ${input.query}
 
-      For each restaurant, provide its number, name, category, and location.
+      For each restaurant, provide its location, name,category, and location.
       Format each recommendation as follows:
       "[Number]. [Restaurant Name] - [Category] in [Location]"
 
