@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { FiMenu, FiMic, FiSend } from 'react-icons/fi';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
@@ -19,8 +19,7 @@ function KatchBotPage() {
   useEffect(() => {
     const saveData = async () => {
         const response = await fetch('/api/result', { method: 'POST' });
-        const data = await response.json();
-     
+        const data = await response.json();     
     };
 
     saveData();
@@ -55,7 +54,6 @@ function KatchBotPage() {
       console.error('Error fetching response:', error);
       setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, I encountered an error while processing your request.' }]);
     }
-
     setInput('');
   };
 
@@ -127,6 +125,8 @@ function KatchBotPage() {
 
 export default function PageWrapper() {
   return (
-      <KatchBotPage />
+    <Suspense fallback={<div>Loading...</div>}>
+    <KatchBotPage />
+  </Suspense>
   );
 }
