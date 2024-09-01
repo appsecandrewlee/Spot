@@ -103,7 +103,6 @@ const HeaderNoAuth: React.FC = () => {
       >
         <button className="w-full py-2 px-4 border border-gray-300 rounded-full mb-4 flex items-center justify-center"
           onClick={handleGoogleSignIn}>
-          
           <Image src="/cross.svg" alt="Google" width={20} height={20} className="mr-2" />
           Sign in with Google
         </button>

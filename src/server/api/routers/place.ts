@@ -36,7 +36,7 @@ export const placeRouter = createTRPCRouter({
 
       User Query: ${input.query}
 
-      For each restaurant, provide its Location, Name,Category,Phone, Review and location, If Review is undefined, don't reveal it. 
+      For each restaurant, provide its Location, Name,Category,Phone,Review and location, If Review is undefined, don't reveal it. 
       Format each recommendation as follows:
       "[Number]\n. 
       [Restaurant Name]\n

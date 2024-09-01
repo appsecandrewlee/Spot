@@ -36,6 +36,7 @@ export async function POST() {
         reserveTableUrl: place.reserveTableUrl || null,
         googleFoodUrl: place.googleFoodUrl || null,
       }));
+      
     const result = await prisma.place.createMany({
         data: transformedPlaces,
         skipDuplicates: true,

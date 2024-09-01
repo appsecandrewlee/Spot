@@ -2,7 +2,7 @@
 
 "use client";
 import React, { useState, useEffect } from 'react';
-import { FiMenu, FiMapPin, FiMic, FiSend } from 'react-icons/fi';
+import { FiMenu, FiMic, FiSend } from 'react-icons/fi';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { api } from '~/trpc/react';
@@ -11,21 +11,16 @@ function KatchBotPage() {
   const searchParams = useSearchParams();
   const initialPrompt = searchParams.get('prompt');
   const [input, setInput] = useState(initialPrompt ?? '');
-  const [messages, setMessages] = useState<Array<{ role: 'user' | 'assistant', content: string }>>([]);
-  const [places, setPlaces] = useState<any[]>([]);
+  const [messages, setMessages] = useState<Array<{ role: 'user' | 'assistant', content: string, imageUrl?: string }>>([]);
 
   const ragQuery = api.place.ragQuery.useMutation();
   const genericQuery = api.place.genericQuery.useMutation();
 
   useEffect(() => {
     const saveData = async () => {
-      try {
         const response = await fetch('/api/result', { method: 'POST' });
         const data = await response.json();
-        console.log('Data saved:', data);
-      } catch (error) {
-        console.error('Error saving data:', error);
-      }
+     
     };
 
     saveData();
@@ -42,8 +37,16 @@ function KatchBotPage() {
     try {
       if (isRestaurantRelated) {
         const result = await ragQuery.mutateAsync({ query: input });
-        setPlaces(result.relevantPlaces);
-        setMessages(prev => [...prev, { role: 'assistant', content: result.aiResponse }]);
+        if (result.relevantPlaces && result.relevantPlaces.length > 0) {
+          const firstPlace = result.relevantPlaces[0];
+          setMessages(prev => [...prev, { 
+            role: 'assistant', 
+            content: result.aiResponse,
+            imageUrl: firstPlace.imageUrl
+          }]);
+        } else {
+          setMessages(prev => [...prev, { role: 'assistant', content: result.aiResponse }]);
+        }
       } else {
         const response = await genericQuery.mutateAsync({ query: input });
         setMessages(prev => [...prev, { role: 'assistant', content: response }]);
@@ -87,30 +90,21 @@ function KatchBotPage() {
                 {message.role === 'user' ? 'You: ' : 'KatchBot: '}
               </strong>
               {message.content}
+              {message.imageUrl && (
+                <div className="mt-2">
+                  <Image
+                    src={message.imageUrl}
+                    alt="Relevant image"
+                    width={200}
+                    height={200}
+                    className="w-full h-full"
+                  />
+                </div>
+              )}
             </div>
           ))}
         </div>
       </main>
-
-      <div className="px-4 mb-4 flex space-x-4">
-        {places.map((place, index) => (
-          <div key={index} className="flex-1 bg-white rounded-lg p-3 shadow">
-            {place.imageUrl && (
-              <Image
-                src={place.imageUrl}
-                alt={place.title}
-                width={200}
-                height={200}
-                className="w-full h-32 object-cover mb-2 rounded"
-              />
-            )}
-            <FiMapPin className="text-pink-500 mb-1" />
-            <h3 className="font-semibold">{place.title}</h3>
-            <p className="text-xs text-gray-600">{place.categoryName}</p>
-            <p className="text-xs text-gray-600">{place.location}</p>
-          </div>
-        ))}
-      </div>
 
       <form onSubmit={handleSubmit} className="p-4 bg-white rounded-t-3xl flex items-center">
         <input
@@ -133,8 +127,6 @@ function KatchBotPage() {
 
 export default function PageWrapper() {
   return (
-    <React.Suspense fallback={<div>Loading...</div>}>
       <KatchBotPage />
-    </React.Suspense>
   );
 }
