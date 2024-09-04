@@ -47,25 +47,45 @@ function KatchBotPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
-
+  
+    // Add the user message first
     setMessages(prev => [...prev, { role: 'user', content: input }]);
-
+  
     const isRestaurantRelated = /restaurant|eat|food|dining/i.test(input);
-
+  
     try {
+      let result;
       if (isRestaurantRelated) {
-        const result = await ragQuery.mutateAsync({ query: input });
-        console.log("API Result:", result); 
+        result = await ragQuery.mutateAsync({ query: input });
+  
+        
         setMessages(prev => [...prev, { 
           role: 'assistant', 
-          content: result.aiResponse,
-          relevantPlaces: result.relevantPlaces
+          content: result.aiResponse, 
+          relevantPlaces: result.relevantPlaces || [] 
+        }]);
+  
+      } else {
+        
+        result = await genericQuery.mutateAsync({ query: input });
+  
+        setMessages(prev => [...prev, { 
+          role: 'assistant', 
+          content: result 
         }]);
       }
+  
+      console.log("API Result:", result);
+  
     } catch (error) {
       console.error('Error fetching response:', error);
+      setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, I encountered an error while processing your request.' }]);
+    } finally {
+      // Reset input
+      setInput('');
     }
-  }    
+  };
+  
 
   return (
     <div className="flex flex-col h-screen bg-pink-50">
