@@ -2,27 +2,25 @@
 "use client";
 import React, { useState, useEffect, Suspense } from 'react';
 import { FiMenu, FiMic, FiSend, FiStar } from 'react-icons/fi';
-import { FaStarHalfAlt } from 'react-icons/fa';
+
+import { FaStar, FaStarHalfAlt } from 'react-icons/fa';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { api } from '~/trpc/react';
 
-// StarRating component to handle full and half stars
 const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
-  console.log("StarRating received rating:", rating); // Debugging log to check the rating value
-
-  const fullStars = Math.floor(rating); // Get the number of full stars
-  const hasHalfStar = rating % 1 !== 0; // Check if there's a half star
-  const totalStars = 5; // Total number of stars
+  const fullStars = Math.floor(rating); 
+  const hasHalfStar = rating % 1 !== 0; 
+  const totalStars = 5; 
 
   return (
-    <div className="flex">
+    <div className="flex space-x-1"> 
       {[...Array(fullStars)].map((_, i) => (
-        <FiStar key={i} style={{ color: '#FBBF24' }} className="w-4 h-4" />
+        <FaStar key={i} className="w-5 h-5 text-yellow-400" /> 
       ))}
-      {hasHalfStar && <FaStarHalfAlt style={{ color: '#FBBF24' }} className="w-4 h-4" />}
+      {hasHalfStar && <FaStarHalfAlt className="w-5 h-5 text-yellow-400" />} 
       {[...Array(totalStars - fullStars - (hasHalfStar ? 1 : 0))].map((_, i) => (
-        <FiStar key={i + fullStars} style={{ color: '#D1D5DB' }} className="w-4 h-4" />
+        <FiStar key={i + fullStars} className="w-5 h-5 text-gray-300" /> 
       ))}
     </div>
   );
@@ -57,7 +55,7 @@ function KatchBotPage() {
     try {
       if (isRestaurantRelated) {
         const result = await ragQuery.mutateAsync({ query: input });
-        console.log("API Result:", result); // Check if totalScore is included
+        console.log("API Result:", result); 
         setMessages(prev => [...prev, { 
           role: 'assistant', 
           content: result.aiResponse,
@@ -103,9 +101,9 @@ function KatchBotPage() {
               {message.relevantPlaces && message.relevantPlaces.map((place, placeIndex) => (
                 <div key={placeIndex} className="mt-2 bg-white rounded p-2">
                   <h3 className="font-bold">{place.title}</h3>
-                  {/* Check if totalScore is being passed correctly */}
-                  {console.log("Place object:", place)} {/* Full place object */}
-                  {console.log("Place totalScore:", place.totalScore)} {/* Debugging log */}
+               
+                  {console.log("Place object:", place)} 
+                  {console.log("Place totalScore:", place.totalScore)} 
                   <StarRating rating={place.totalScore || 0} />
                   {place.imageUrl && (
                     <Image
