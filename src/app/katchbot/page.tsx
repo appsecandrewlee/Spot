@@ -2,18 +2,27 @@
 "use client";
 import React, { useState, useEffect, Suspense } from 'react';
 import { FiMenu, FiMic, FiSend, FiStar } from 'react-icons/fi';
+import { FaStarHalfAlt } from 'react-icons/fa';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { api } from '~/trpc/react';
 
+// StarRating component to handle full and half stars
 const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
+  console.log("StarRating received rating:", rating); // Debugging log to check the rating value
+
+  const fullStars = Math.floor(rating); // Get the number of full stars
+  const hasHalfStar = rating % 1 !== 0; // Check if there's a half star
+  const totalStars = 5; // Total number of stars
+
   return (
     <div className="flex">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <FiStar
-          key={star}
-          className={`${star <= rating ? "text-yellow-400 fill-current" : "text-gray-300"} w-4 h-4`}
-        />
+      {[...Array(fullStars)].map((_, i) => (
+        <FiStar key={i} style={{ color: '#FBBF24' }} className="w-4 h-4" />
+      ))}
+      {hasHalfStar && <FaStarHalfAlt style={{ color: '#FBBF24' }} className="w-4 h-4" />}
+      {[...Array(totalStars - fullStars - (hasHalfStar ? 1 : 0))].map((_, i) => (
+        <FiStar key={i + fullStars} style={{ color: '#D1D5DB' }} className="w-4 h-4" />
       ))}
     </div>
   );
@@ -30,8 +39,8 @@ function KatchBotPage() {
 
   useEffect(() => {
     const saveData = async () => {
-        const response = await fetch('/api/result', { method: 'POST' });
-        const data = await response.json();     
+      const response = await fetch('/api/result', { method: 'POST' });
+      const data = await response.json();
     };
 
     saveData();
@@ -48,21 +57,17 @@ function KatchBotPage() {
     try {
       if (isRestaurantRelated) {
         const result = await ragQuery.mutateAsync({ query: input });
+        console.log("API Result:", result); // Check if totalScore is included
         setMessages(prev => [...prev, { 
           role: 'assistant', 
           content: result.aiResponse,
           relevantPlaces: result.relevantPlaces
         }]);
-      } else {
-        const response = await genericQuery.mutateAsync({ query: input });
-        setMessages(prev => [...prev, { role: 'assistant', content: response }]);
       }
     } catch (error) {
       console.error('Error fetching response:', error);
-      setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, I encountered an error while processing your request.' }]);
     }
-    setInput('');
-  };
+  }    
 
   return (
     <div className="flex flex-col h-screen bg-pink-50">
@@ -98,6 +103,9 @@ function KatchBotPage() {
               {message.relevantPlaces && message.relevantPlaces.map((place, placeIndex) => (
                 <div key={placeIndex} className="mt-2 bg-white rounded p-2">
                   <h3 className="font-bold">{place.title}</h3>
+                  {/* Check if totalScore is being passed correctly */}
+                  {console.log("Place object:", place)} {/* Full place object */}
+                  {console.log("Place totalScore:", place.totalScore)} {/* Debugging log */}
                   <StarRating rating={place.totalScore || 0} />
                   {place.imageUrl && (
                     <Image
@@ -137,7 +145,7 @@ function KatchBotPage() {
 export default function PageWrapper() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-    <KatchBotPage />
+      <KatchBotPage />
     </Suspense>
   );
 }
